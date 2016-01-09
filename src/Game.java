@@ -4,6 +4,9 @@ public class Game {
 	private static void initialize() {
 		ItemLib.itemDB.add(Stick.class);
 		ItemLib.itemDB.add(Stone.class);
+		World.generateSpawn();
+		int[] chunkCords = new int[] {0,0};
+		World.generateSpawnChunks(chunkCords);
 	}
 	
 	private static Object instantiateItem(int index, int meta) {
