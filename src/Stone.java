@@ -1,22 +1,15 @@
 
-public class Stone {
-	public String name;
-	public String desc;
+public class Stone extends Item {
 	public int id = 1;
-	public int meta = -1;
 	public boolean knapped = false;
 	public boolean sharp;
 	
-	public Stone(int meta) {
-		switch(meta) {
-		case 0:
-			this.name = "Granite Stone";
-			this.desc = "A rock laying in the grass";
-			this.meta = meta;
-			break;
-		default:
-			Debug.error(1);
-			break;
-		}
+	public static Stone CreateGraniteStone()
+	{
+		return new Stone("Granite Stone", "A rock laying in the grass");
+	}
+	
+	public Stone(String name, String desc) {
+		super(name,desc);
 	}
 }

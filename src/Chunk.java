@@ -1,27 +1,33 @@
-
 public class Chunk {
-	private int id;
+	final static public int WIDTH = 16;
+	final static public int HEIGHT = 16;
 	private int treeCount;
-	private int[][] corners = new int[][] 
-	{
-		{0,0},
-		{0,0}
-	};
-	private int[] chunkCords = new int[] {0,0};
+	public Tile[][] tiles = new Tile[HEIGHT][WIDTH];
 	
-	private void spawnTrees(int trees) {
-		int cordX = corners[0][0] + (int)(Math.random() * (corners[1][0] - corners[0][0]) + 1);
-		int cordY = corners[0][1] + (int)(Math.random() * (corners[1][1] - corners[0][1]) + 1);
-	}
+	private Point chunkCords;
 	
-	public Chunk(int[] cords, int tree, int id) {
-		this.chunkCords = cords;
-		this.corners[0][0] = cords[0] * 16;
-		this.corners[0][1] = cords[1] * 16;
-		this.corners[1][0] = corners[0][0] + 16;
-		this.corners[1][1] = corners[0][1] + 16;
+	public Chunk(Point coords, int tree) {
+		this.chunkCords = coords;
 		this.treeCount = tree;
+		
+		for (int i = 0; i < HEIGHT; i++)
+		{
+			for (int j = 0; j < WIDTH; j++)
+			{
+				this.tiles[i][j] = Tile.generateTile();
+			}
+		}
+		
 		this.spawnTrees(this.treeCount);
 	}
 	
+	private void spawnTrees(int trees) {
+		for (int i = 0; i < trees; i++)
+		{
+			int cordX = (int)(Math.random() * WIDTH);
+			int cordY = (int)(Math.random() * HEIGHT);
+			
+			tiles[cordY][cordX].tree = Tree.generateSmallAppleTree();
+		}
+	}	
 }
