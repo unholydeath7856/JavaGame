@@ -22,33 +22,22 @@ public class Game {
 	{
 		// User interactivity loop!
 		boolean running = true;
+		String menuName = "the [Root]";
 		while (running) {
 			Scanner scanner = new Scanner(System.in);
 			Tile currentTile = world.chunkMap[player.playerPos.y/Chunk.HEIGHT][player.playerPos.x/Chunk.WIDTH].tiles[player.playerPos.y % Chunk.HEIGHT][player.playerPos.x % Chunk.WIDTH];
-			System.out.println("Tile Name: " + currentTile.name + " Tile Desc: " + currentTile.desc);
-			System.out.println("X: " + player.playerPos.x + " Y: " + player.playerPos.y);
-			System.out.println("Year: " + gameTimeTasks.year + " Month: " + gameTimeTasks.displayMonth + " Day: " + gameTimeTasks.displayDay);
-			if (currentTile.tree != null) {
-				System.out.println("has tree DropTime: " + currentTile.tree.timeToDrop + " Mature Day: " + currentTile.tree.matureDay + " Rippen Day: " + currentTile.tree.rippenDay);
-				
-			}
+			Game.textUpdate(currentTile, player, gameTimeTasks, menuName);
 			String input = scanner.nextLine();
-			
+
 			switch (input) {
+			case "w":
+				world.menu(player,currentTile,gameTimeTasks, world);
+				break;
 			case "m":
-				player.move(currentTile, gameTimeTasks);
+				Game.menu(player,currentTile,gameTimeTasks);
 				break;
-			case "o":
-				player.seeInv();
-				break;
-			case "p":
-				player.pickUpItem(currentTile);
-				break;
-			case "r":
-				player.dropItem(currentTile);
-				break;
-			default :
-				break;
+			default:
+				System.out.println("Help func");
 			}
 		}
 	}
@@ -60,13 +49,13 @@ public class Game {
 					for (int tileY = 0; tileY < Chunk.HEIGHT; tileY++) {
 						Tile tile = world.chunkMap[chunkY][chunkX].tiles[tileY][tileX];
 						if (tile.tree != null) {
-							if (gameTimeTasks.displayMonth >= 7 && gameTimeTasks.displayMonth <= 10 && gameTimeTasks.displayDay >= tile.tree.rippenDay && tile.tree.fruitCount != 0 ) {
+							if (gameTimeTasks.displayMonth >= tile.tree.fruit.startMonth && gameTimeTasks.displayMonth <= tile.tree.fruit.endMonth && gameTimeTasks.displayDay >= tile.tree.fruit.rippenDay && tile.tree.fruitCount != 0 ) {
 								tile.tree.timeToDrop -= 60;
 								if (tile.tree.timeToDrop < 0) {
-									if (gameTimeTasks.displayDay >= tile.tree.matureDay) {
-										tile.tree.fruit = Apple.createRedApple();
+									if (gameTimeTasks.displayDay >= tile.tree.fruit.matureDay) {
+										tile.tree.fruit = Apple.createRedApple(tile.tree.fruit);
 									}
-									tile.tree.timeToDrop = 5000;
+									tile.tree.timeToDrop = (int)(Math.random() * (10000-5000));
 									tile.tree.fruitCount--;
 									tile.items.add(tile.tree.fruit);
 								}
@@ -81,11 +70,47 @@ public class Game {
 									tile.tree.size+=2;
 									tile.tree.fruitCountUpdate(tile.tree);
 								}
+							} else {
+								tile.tree.fruit = Apple.createGreenApple();
 							}
 						}
 					}
 				}
 			}
+		}
+	}
+	
+	public static void menu(Player player, Tile currentTile, GameTimeTasks gameTimeTasks) {
+		Scanner scanner = new Scanner(System.in);
+		boolean inMainMenu = true;
+		String menuName = "the [Main Menu]";
+		while (inMainMenu) {
+			Game.textUpdate(currentTile, player, gameTimeTasks, menuName);
+			String input = scanner.nextLine();
+			switch(input) {
+			case "c":
+				System.out.println("Character options");
+				break;
+			case "i":
+				player.seeInv();
+				Inventory.menu(player,currentTile,gameTimeTasks);
+				break;
+			default:
+				inMainMenu = false;
+				break;
+			}
+		}
+		
+	}
+	
+	public static void textUpdate(Tile currentTile, Player player, GameTimeTasks gameTimeTasks, String menuName) {
+		System.out.println("You ar currently in " + menuName);
+		System.out.println("Tile Name: " + currentTile.name + " Tile Desc: " + currentTile.desc);
+		System.out.println("X: " + player.playerPos.x + " Y: " + player.playerPos.y);
+		System.out.println("Year: " + gameTimeTasks.year + " Month: " + gameTimeTasks.displayMonth + " Day: " + gameTimeTasks.displayDay);
+		if (currentTile.tree != null) {
+			System.out.println("has tree DropTime: " + currentTile.tree.timeToDrop + " Mature Day: " + currentTile.tree.fruit.matureDay + " Rippen Day: " + currentTile.tree.fruit.rippenDay);
+
 		}
 	}
 	

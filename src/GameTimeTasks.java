@@ -6,8 +6,8 @@ public class GameTimeTasks extends TimerTask {
 	public int day = 1;
 	public int displayDay = 1;
 	public int month = 1;
-	public int displayMonth = 7;
-	public int year = 8;
+	public int displayMonth = 1;
+	public int year = 1;
 	
 	private Game game;
 	
